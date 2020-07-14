@@ -1,3 +1,7 @@
+This is custom fork of Hugging Face Transformers for the paper [Pretrained Semantic Speech Embeddings for End-to-End Spoken Language Understanding via Cross-Modal Teacher-Student Learning](https://arxiv.org/abs/2007.01836).
+
+---
+
 <p align="center">
     <br>
     <img src="https://raw.githubusercontent.com/huggingface/transformers/master/docs/source/imgs/transformers_logo_name.png" width="400"/>

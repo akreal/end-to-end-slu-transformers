@@ -390,3 +390,65 @@ exact_match = 86.91
 This fine-tuneds model is available as a checkpoint under the reference
 `bert-large-uncased-whole-word-masking-finetuned-squad`.
 
+
+## Intent classification
+
+
+#### Train classifier on transcriptions
+
+
+```bash
+python run_classifier.py \
+--task_name fluentai \
+--model_type sbert \
+--model_name_or_path bert-base-nli-stsb-mean-tokens \
+--output_dir fluentai_sbert \
+--do_test \
+--data_dir corpora/fluent_speech_commands_dataset/data \
+--do_train \
+--do_eval \
+--save_steps 2892 \
+--logging_steps 2892 \
+--eval_all_checkpoints \
+--overwrite_output_dir \
+--num_train_epochs 3
+```
+
+#### Test classifier on end-to-end SLU embeddings
+
+
+```bash
+python run_classifier.py \
+--task_name fluentai \
+--model_type sbert \
+--model_name_or_path bert-base-nli-stsb-mean-tokens \
+--output_dir fluentai_sbert \
+--do_test \
+--data_dir corpora/fluent_speech_commands_dataset/data/ \
+--custom-features-json espnet/egs/e2e_slu/slu1/exp/sbert__tune_2_0_warmup_700000_epoch_100_lr_30_loss_l1_loss/fluentai_test.json
+```
+
+#### Tune end-to-end SLU and classifier on recordings
+
+
+```bash
+s=10
+l=2
+d=fluentai_slu_s${s}_l${l}
+
+mkdir -p $d
+
+python run_speech_classifier.py \
+--model_type slu \
+--task_name fluentai \
+--output_dir $d \
+--do_test \
+--do_train \
+--evaluate_during_training \
+--logging_steps 1 \
+--overwrite_output_dir \
+--num_train_epochs 10 \
+--n_shot ${s} \
+--unfreeze_layers asr${l} \
+--per_gpu_eval_batch_size 64
+```
